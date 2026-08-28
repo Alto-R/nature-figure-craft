@@ -4,7 +4,7 @@
 
 **Research figures are two problems, not one: which chart to draw, and how to draw it so it survives submission.**
 
-Two installable Claude Code skills, plus three plotting modules that work on their own.
+Two installable Claude Code skills, plus four plotting modules that work on their own.
 
 ![Skills](https://img.shields.io/badge/skills-2-4C72B0)
 ![Python](https://img.shields.io/badge/python-3.9%2B-3C5488)
@@ -36,7 +36,7 @@ This is **v0.1, the first release**. Issues pointing out what's wrong are welcom
 | | | |
 |:--:|:--:|:--:|
 | [🧭 What this is](#-what-this-is) | [⚖️ Division of labour](#-division-of-labour) | [🚀 Install](#-install) |
-| [🗂️ Layout](#-layout) | [🎨 Palette gallery](#-palette-gallery) | [🧩 Using the style module alone](#-using-the-style-module-alone) |
+| [🗂️ Layout](#-layout) | [🎨 Palette gallery](#-palette-gallery) · [🧱 Panel recipes](#-panel-recipe-gallery) | [🧩 Using the style module alone](#-using-the-style-module-alone) |
 | [💡 The short version](#-the-short-version) | [📄 License](#-license) | |
 
 </div>
@@ -48,7 +48,7 @@ This is **v0.1, the first release**. Issues pointing out what's wrong are welcom
 Most bad figures are not badly *rendered* — they are badly *chosen*. A beautifully styled grouped bar chart of a time series is still the wrong figure. So the work is split in two, one skill each:
 
 - **`chart-type-chooser`** — used *before* any plotting code. It profiles the data first, then asks what one sentence the figure has to make the reader remember, and returns two or three candidate chart types, the rejected alternatives *with reasons*, an encoding plan, and an anti-pattern check. Covers ~70 chart types across nine communicative intents.
-- **`nature-figure-production`** — used *after* the chart type is fixed. It applies the Nature-family final-artwork specification (88/180 mm column widths, landed type sizes, editable vector, RGB, 50 MB cap) and house style, adds recipes for the three chart families that carry their own geometry (maps, region plots, chord diagrams), and runs the real production pipeline: panels rendered separately, legends exported standalone, assembly in a vector tool.
+- **`nature-figure-production`** — used *after* the chart type is fixed. It applies the Nature-family final-artwork specification (88/180 mm column widths, landed type sizes, editable vector, RGB, 50 MB cap) and house style, adds recipes for the recurring panel families (distributions, coefficients, compositions, fits, densities, state timelines, matrices) and for the three that carry their own geometry (maps, region plots, chord diagrams), and runs the real production pipeline: panels rendered separately, legends exported standalone, assembly in a vector tool.
 
 Neither makes the scientific judgement for you. They handle the part after it — getting that judgement onto the page reliably.
 
@@ -103,6 +103,7 @@ nature-figure-craft/
     │   ├── spec.md                     # final-artwork spec (88/180 mm, landed type, vector, 50 MB)
     │   ├── style.md                    # typography, units, colour rules, colormap selection
     │   ├── palettes.md                 # palette gallery (below)
+    │   ├── panels.md                   # panel recipe gallery (below)
     │   ├── composition.md              # ten multi-panel layout templates
     │   ├── quadrant.md                 # region plots: where dividers come from, naming, layers, legend
     │   ├── maps.md                     # map panels: layer stack, basemap presets, points vs polygons
@@ -110,15 +111,17 @@ nature-figure-craft/
     └── assets/
         ├── nature_style.py             # panel() / apply_style() / landed_report() / save_all()
         │                               #   + every palette constant, diverging_cmap(), palette_report()
+        ├── nature_panels.py            # panel families: violin / forest / stack / fit / density / state bands / matrix
         ├── nature_map.py               # five map layers: basemap / polygons / field / points / marginals
         ├── nature_quadrant.py          # region plots: thresholds / backgrounds / bubbles / insets / legend
         └── nature_chord.R              # chord diagrams (circlize): opacity-encoded flow, vector export
 ```
 
-Three of the assets carry their own self-test on synthetic data — run them and you get demo figures:
+Four of the assets carry their own self-test on synthetic data — run them and you get demo figures:
 
 ```bash
 python nature_style.py      # demo panel + palette health report
+python nature_panels.py     # demo_panels.png (eight panel families) / demo_panels_timeline.png
 python nature_quadrant.py   # demo_quadrant.png / _legend.png / _2x2.png
 Rscript nature_chord.R      # demo_chord_ungrouped.* / _grouped.* / _legend.pdf
 ```
@@ -146,6 +149,29 @@ from nature_style import DIVERGING, diverging_cmap, CLASSES6, palette_report
 
 cmap = diverging_cmap()                          # neutral pinned to 0.5, not the default 0.583
 palette_report(CLASSES6, ordered=True)           # names the steps that collide in greyscale
+```
+
+## 🧱 Panel recipe gallery
+
+`references/panels.md` turns the panel types that keep recurring into **components**, each with the decision it turns on and the failure it prevents. Code lives in `nature_panels.py`:
+
+| Recipe | Call | The decision that matters |
+|---|---|---|
+| Distributions | `violin_box()` | Whiskers redrawn at Tukey 1.5×IQR — the default extrema encode sample size, not spread |
+| Coefficients | `forest()` | Pass interval **bounds**, not error distances; one row order shared across the grid |
+| Compositions | `stacked_bars()` | Draw the total as its own mark — only the bottom segment shares a baseline |
+| Grouped comparison | `grouped_bars()` | Dodge offsets centred on the tick; intervals, never asterisks |
+| Fits | `fit_line()` | The band stops where the data stops; name CI-on-the-line vs prediction interval |
+| Density | `density_field()` | Past ~5,000 points a scatter is a silhouette; it needs a colour bar |
+| State timelines | `runs()` + `state_bands()` | Close the run still open at the end; one legend entry per regime |
+| Matrices | `matrix_panel()` | Centre the colour scale; suppress numbers that will not fit |
+| Sankey / alluvial | see §11 | Pin the node coordinates or the figure reshapes on every re-run |
+| Small-multiple grids | `ragged_grid()` / `tidy_grid()` | With a ragged last row the test is `i + n_cols >= n` |
+
+One command renders all eight families:
+
+```bash
+python nature_panels.py     # demo_panels.png + demo_panels_timeline.png
 ```
 
 ## 🧩 Using the style module alone

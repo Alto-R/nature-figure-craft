@@ -6,6 +6,9 @@ description: >-
   measured at LANDED size and derived per panel from where it will be placed, RGB,
   editable vector export), the Nature house style (lowercase bold panel letters,
   negative-exponent units, no chart title, frameless legend), a semantic colour system,
+  recipes for the recurring panel families (distributions, coefficient/forest plots,
+  stacked compositions, regression fits, density panels, state timelines, matrices,
+  Sankey flows, small-multiple grids),
   the map-panel recipe, the region-plot (quadrant) and chord-diagram
   recipes, and the panel-by-panel production workflow
   (separate panel export, standalone legend files, PDF+SVG+PNG triple export, vector
@@ -13,7 +16,10 @@ description: >-
   Also runs an addition pass: which layers a panel still needs, and a cold read of
   the rendered panel to catch the figure that passes every rule and still says nothing.
   Use when the user asks to plot, draw, chart, visualise data, style a matplotlib
-  figure, build a quadrant / region plot or a chord diagram, derive and justify the
+  figure, build a violin or box panel, a forest / coefficient plot, a stacked or
+  grouped bar chart, a regression fit with a confidence band, a heatmap or
+  correlation matrix, a Sankey / alluvial diagram, a small-multiple grid,
+  build a quadrant / region plot or a chord diagram, derive and justify the
   dividing lines of a classification figure,
   prepare final artwork, assemble a multi-panel figure, or fix a figure that
   "looks unprofessional", "looks bare", or "does not look like anyone would stop on
@@ -46,18 +52,20 @@ Load references on demand:
 
 - **[references/spec.md](references/spec.md)** — official final-artwork requirements, size tables, format rules
 - **[references/style.md](references/style.md)** — typography, axes, colour system, colormap selection
+- **[references/panels.md](references/panels.md)** — the recurring data-panel families: distributions, coefficients, compositions, fits, density panels, state timelines, matrices, flow panels, small-multiple grids
 - **[references/palettes.md](references/palettes.md)** — palette gallery: worked diverging, sequential, ordinal, qualitative, semantic, 2×2 and region-fill schemes, with hexes, the job each does, and the measured lightness that makes it check out
 - **[references/composition.md](references/composition.md)** — ten reusable multi-panel layout templates, flagged by whether they need coordinates
 - **[references/quadrant.md](references/quadrant.md)** — region plots: where the dividing lines come from, sensitivity, naming, layering, marginals, insets, the legend-as-schematic
 - **[references/maps.md](references/maps.md)** — map panels: the layer stack, basemap presets, points vs polygons, implementation traps, which layer to turn on. Skip if the data has no coordinates
 - **[references/workflow.md](references/workflow.md)** — panel-separated production pipeline, assembly, checklist
 - **[assets/nature_style.py](assets/nature_style.py)** — drop-in module: `panel()`, `apply_style()`, `landed_report()`, the palettes from `palettes.md` as importable constants, `diverging_cmap()`, `palette_report()`, `save_all()`, `export_legend()`
+- **[assets/nature_panels.py](assets/nature_panels.py)** — the recurring panel families: `violin_box()`, `forest()`, `stacked_bars()`, `grouped_bars()`, `fit_line()`, `density_field()`, `runs()`, `state_bands()`, `matrix_panel()`, plus `auto_unit()`, `headroom()`, `stat_box()`, `ragged_grid()`, `tidy_grid()`
 - **[assets/nature_map.py](assets/nature_map.py)** — map panel layers: basemap, polygon outlines, choropleth, density field, ringed value points, marginal profiles, data-driven colormap choice
 - **[assets/nature_quadrant.py](assets/nature_quadrant.py)** — region plots: `threshold()`, `gmm_threshold()`, `sensitivity()`, `regions()`, `region_background()`, `divider()`, `bubble_scatter()`, marginals, `zoom_inset()`, `label_points()`, `counts_table()`, `partition_legend()`
 - **[assets/nature_chord.R](assets/nature_chord.R)** — chord diagram (circlize): magnitude-encoded ribbon opacity, sub-threshold ribbons hidden without shrinking sectors, landed-pt label sizing, vector PDF export, and an opt-in grouping layer (group arcs, labels, and a gap budget)
 
 Each asset module runs its own self-test on synthetic data:
-`python nature_quadrant.py`, `Rscript nature_chord.R`.
+`python nature_panels.py`, `python nature_quadrant.py`, `Rscript nature_chord.R`.
 
 ## When to use this skill
 
@@ -270,6 +278,47 @@ ax.text(-0.14, 1.06, 'a', transform=ax.transAxes,
 
 Multi-panel: only outer axes carry axis labels; use `fig.supylabel()` for a shared
 label and clear the inner ones.
+
+### Step 3a — The recurring panel families
+
+The checklist above is generic. Most panels also belong to one of a handful of
+**families**, each with two or three decisions that the checklist cannot see
+because nothing about the rendered panel looks wrong when they are made badly.
+
+Full recipes in **[references/panels.md](references/panels.md)**; code in
+`assets/nature_panels.py`.
+
+```python
+from nature_panels import violin_box, forest, stacked_bars, fit_line, density_field
+
+violin_box(ax, groups, spec=p, labels=names, show_n=True)   # Tukey whiskers, real n
+forest(ax, names, beta, ci_lo, ci_hi, spec=p, order=ORDER)  # bounds, not distances
+stacked_bars(ax, x, components, spec=p)                     # total as its own mark
+fit_line(ax, x, y, spec=p)                                  # band stops at the data
+```
+
+The decisions worth knowing before drawing anything:
+
+1. **Violins hide `n` and fake their whiskers.** Matplotlib's default extrema
+   run to the data min/max, so whisker length encodes sample size. Redraw at
+   Tukey 1.5 × IQR and print `n` whenever groups are unbalanced.
+2. **`xerr` wants distances; `conf_int()` returns bounds.** Passing bounds
+   straight through renders happily and is wrong. `forest()` takes bounds.
+3. **A stacked bar shows composition, not totals.** Only the bottom segment
+   sits on a common baseline. Draw the total as its own line-and-marker layer.
+4. **A confidence band must stop where the data stops**, and the caption must
+   say whether it is a CI on the fitted line or a prediction interval.
+5. **Above ~5,000 points a scatter is a silhouette.** Switch to a density
+   panel — and give it a colour bar, or the reader cannot tell 60% from 99%.
+6. **Intervals, never asterisks.** Colour by whether the interval excludes the
+   reference. A star hides the effect size, and its p-value is inflated
+   wherever observations are clustered. See panels.md §4.
+7. **A ragged bottom row breaks the outer-ring label rule.** The test is
+   `i + n_cols >= n`, not `row == n_rows - 1`, or whole columns lose their
+   x axis. `tidy_grid()` handles it.
+
+Sankey and alluvial panels are covered in panels.md §11 (plotly or R, with the
+legend drawn separately in matplotlib and placed at assembly).
 
 ### Step 3b — Maps: five layers, chosen against the claim
 

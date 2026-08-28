@@ -4,7 +4,7 @@
 
 **把科研配图拆成两件事：该画哪种图，和怎么把它画成能过投稿的图。**
 
-两个可直接安装的 Claude Code skill，外加三个能独立使用的绘图模块。
+两个可直接安装的 Claude Code skill，外加四个能独立使用的绘图模块。
 
 ![Skills](https://img.shields.io/badge/skills-2-4C72B0)
 ![Python](https://img.shields.io/badge/python-3.9%2B-3C5488)
@@ -36,7 +36,7 @@
 | | | |
 |:--:|:--:|:--:|
 | [🧭 这是什么](#-这是什么) | [⚖️ 两个 skill 的分工](#-两个-skill-的分工) | [🚀 安装](#-安装) |
-| [🗂️ 目录结构](#-目录结构) | [🎨 配色示例库](#-配色示例库) | [🧩 直接用样式模块](#-直接用样式模块) |
+| [🗂️ 目录结构](#-目录结构) | [🎨 配色示例库](#-配色示例库) · [🧱 面板组件库](#-面板组件库) | [🧩 直接用样式模块](#-直接用样式模块) |
 | [💡 核心观点](#-核心观点) | [📄 License](#-license) | |
 
 </div>
@@ -48,7 +48,7 @@
 大多数不好的图，问题不在**画得糙**，而在**选错了图**——一张排版精美的分组柱状图，如果数据本来是时间序列，那它依然是错的。所以这里把配图拆成前后两步，各做成一个 skill：
 
 - **`chart-type-chooser`** —— 写任何绘图代码之前用。先给数据做画像，再问"这张图要让读者记住哪一句话"，然后回 2–3 个候选图型、被否掉的方案和理由、编码方案，以及一遍反模式检查。覆盖九类表达意图下约 70 种图型。
-- **`nature-figure-production`** —— 图型定了之后用。按 Nature 系期刊的终稿规格（88/180 mm 栏宽、落版字号、可编辑矢量、RGB、50 MB 上限）和 house style 出图，含地图、象限图、弦图三类"自带几何"的图族配方，以及面板分开画、图例单独导出、最后矢量拼版的生产流程。
+- **`nature-figure-production`** —— 图型定了之后用。按 Nature 系期刊的终稿规格（88/180 mm 栏宽、落版字号、可编辑矢量、RGB、50 MB 上限）和 house style 出图，含分布、系数、构成、拟合、密度、状态时间轴、矩阵等常见面板家族的组件配方，地图、象限图、弦图三类"自带几何"的图族配方，以及面板分开画、图例单独导出、最后矢量拼版的生产流程。
 
 两者都不替你做学术判断：它们负责的是**把判断稳定地落到纸面上**这一段。
 
@@ -103,6 +103,7 @@ nature-figure-craft/
     │   ├── spec.md                     # 终稿硬规格（88/180 mm、落版字号、矢量、50 MB）
     │   ├── style.md                    # 版式、单位写法、配色规则、colormap 选择
     │   ├── palettes.md                 # 配色示例库（见下）
+    │   ├── panels.md                   # 面板组件库（见下）
     │   ├── composition.md              # 十个多面板构图模板
     │   ├── quadrant.md                 # 象限图：分界线怎么定、命名、图层、边际、图例
     │   ├── maps.md                     # 地图面板：图层栈、basemap 预设、点 vs 多边形
@@ -110,15 +111,17 @@ nature-figure-craft/
     └── assets/
         ├── nature_style.py             # panel() / apply_style() / landed_report() / save_all()
         │                               #   + 全部配色常量、diverging_cmap()、palette_report()
+        ├── nature_panels.py            # 面板组件：小提琴 / 森林图 / 堆叠 / 拟合 / 密度 / 状态带 / 矩阵
         ├── nature_map.py               # 地图五层：basemap / 多边形 / 密度场 / 值点 / 边际剖面
         ├── nature_quadrant.py          # 象限图：阈值推导 / 分区背景 / 气泡 / inset / 示意图图例
         └── nature_chord.R              # 弦图（circlize）：透明度编码流量、矢量导出、可选分组
 ```
 
-三个 asset 自带 self-test（合成数据），直接跑就出 demo 图：
+四个 asset 自带 self-test（合成数据），直接跑就出 demo 图：
 
 ```bash
 python nature_style.py      # demo 样式图 + 配色体检报告
+python nature_panels.py     # demo_panels.png（八个面板家族）/ demo_panels_timeline.png
 python nature_quadrant.py   # demo_quadrant.png / _legend.png / _2x2.png
 Rscript nature_chord.R      # demo_chord_ungrouped.* / _grouped.* / _legend.pdf
 ```
@@ -146,6 +149,29 @@ from nature_style import DIVERGING, diverging_cmap, CLASSES6, palette_report
 
 cmap = diverging_cmap()                          # 中性色钉在 0.5，而不是默认的 0.583
 palette_report(CLASSES6, ordered=True)           # 灰度下哪两级会撞在一起，直接报出来
+```
+
+## 🧱 面板组件库
+
+`references/panels.md` 把反复出现的图型抽成**组件**，每个都写清楚它的关键判断、它防住的错误，代码在 `nature_panels.py`：
+
+| 组件 | 调用 | 关键判断 |
+|---|---|---|
+| 分布 | `violin_box()` | 须线按 Tukey 1.5×IQR 重画，不用极值——默认极值长度编码的是样本量 |
+| 系数 / 森林图 | `forest()` | 传区间**上下界**，不是误差距离；整个网格共用一个行序 |
+| 构成 | `stacked_bars()` | 总量单独画一层——堆叠图里只有最底层在同一基线上 |
+| 分组对比 | `grouped_bars()` | dodge 偏移居中；画区间，不画星号 |
+| 拟合 | `fit_line()` | 置信带止于数据边界；标明是拟合线的 CI 还是预测区间 |
+| 密度 | `density_field()` | 超过约 5000 点散点就成剪影；必须配色标 |
+| 状态时间轴 | `runs()` + `state_bands()` | 收尾那段仍为真的游程要显式闭合；一个状态只出一个图例项 |
+| 矩阵 | `matrix_panel()` | 色标钉死中心，不随数据拉伸；放不下就不标数字 |
+| 桑基 / 冲积 | 见 §11 | 节点坐标必须钉死，否则每次重跑图都变样 |
+| 小多图网格 | `ragged_grid()` / `tidy_grid()` | 末行不满时，判据是 `i + n_cols >= n` |
+
+跑一次就能看到全部八个家族：
+
+```bash
+python nature_panels.py     # demo_panels.png + demo_panels_timeline.png
 ```
 
 ## 🧩 直接用样式模块

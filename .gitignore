@@ -2,6 +2,9 @@
 pdf/
 svg/
 png/
+demo_*.png
+demo_*.pdf
+demo_*.svg
 Rplots.pdf
 
 # Python
