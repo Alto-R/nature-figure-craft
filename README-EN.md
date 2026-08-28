@@ -21,7 +21,7 @@ Two installable Claude Code skills, plus three plotting modules that work on the
 
 ## 🙋 About
 
-I'm [Churui Huang](https://alto-r.github.io/), a postgraduate at Peking University working on smart cities, urban computing and energy systems.
+I'm [Churui Huang](https://alto-r.github.io/), a postgraduate at Peking University. My research interests sit at the intersection of energy and transport systems · energy geography · urban computing · optimization · artificial intelligence.
 
 This is what accumulated from my own submissions: the palettes, the layout rules, the map layer ordering, how a region plot's dividing lines get justified, the render-panels-separately-then-assemble pipeline — most of it comes from figures I actually drew for manuscripts.
 
