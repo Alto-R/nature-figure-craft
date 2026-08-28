@@ -1,0 +1,18 @@
+# Self-test output from the asset modules
+pdf/
+svg/
+png/
+Rplots.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
