@@ -4,9 +4,11 @@
 
 **Research figures are two problems, not one: which chart to draw, and how to draw it so it survives submission.**
 
-Two installable Claude Code skills, plus four plotting modules that work on their own.
+Two research-figure skills for **Claude Code and OpenAI Codex**, plus four plotting modules that work on their own.
 
 ![Skills](https://img.shields.io/badge/skills-2-4C72B0)
+![Claude Code](https://img.shields.io/badge/Claude_Code-supported-D97757)
+![Codex](https://img.shields.io/badge/OpenAI_Codex-supported-00A087)
 ![Python](https://img.shields.io/badge/python-3.9%2B-3C5488)
 ![matplotlib](https://img.shields.io/badge/matplotlib-%E2%89%A53.5-0B75B3)
 ![R](https://img.shields.io/badge/R-circlize-982B2D)
@@ -67,23 +69,73 @@ Neither makes the scientific judgement for you. They handle the part after it �
 
 ## 🚀 Install
 
-Copy into your Claude Code skills directory:
+Both clients use the same `SKILL.md`, references and plotting modules. Each skill also includes `agents/openai.yaml` with a display name, short description and default prompt for Codex.
+
+Clone the repository and install the Python dependencies first:
 
 ```bash
 git clone https://github.com/Alto-R/nature-figure-craft.git
 cd nature-figure-craft
+python -m pip install -r requirements.txt
+```
+
+Choose the installation directory for your client:
+
+| Client | User scope (all projects) | Project scope (copy into the target project) |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| OpenAI Codex | `~/.agents/skills/` | `.agents/skills/` |
+
+### Claude Code
+
+macOS / Linux:
+
+```bash
+mkdir -p ~/.claude/skills
 cp -r chart-type-chooser        ~/.claude/skills/
 cp -r nature-figure-production  ~/.claude/skills/
 ```
 
-Windows:
+Windows PowerShell:
 
-```bat
-xcopy /E /I chart-type-chooser        %USERPROFILE%\.claude\skills\chart-type-chooser
-xcopy /E /I nature-figure-production  %USERPROFILE%\.claude\skills\nature-figure-production
+```powershell
+$skillsDir = Join-Path $HOME '.claude/skills'
+New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
+Copy-Item -Recurse -Force -Path chart-type-chooser, nature-figure-production -Destination $skillsDir
 ```
 
-After that just ask normally — "plot this for me", or "this figure doesn't look like a paper figure" — and the skills trigger themselves.
+### OpenAI Codex
+
+macOS / Linux:
+
+```bash
+mkdir -p ~/.agents/skills
+cp -r chart-type-chooser        ~/.agents/skills/
+cp -r nature-figure-production  ~/.agents/skills/
+```
+
+Windows PowerShell:
+
+```powershell
+$skillsDir = Join-Path $HOME '.agents/skills'
+New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
+Copy-Item -Recurse -Force -Path chart-type-chooser, nature-figure-production -Destination $skillsDir
+```
+
+Copy each complete skill directory, including `agents/`, `references/` and `assets/`. See the [official OpenAI documentation](https://developers.openai.com/codex/skills/) for Codex discovery paths and invocation. If a newly installed skill does not appear, restart the client and check again.
+
+### Use and handoff
+
+Ask normally in Claude Code or Codex, for example, "help me choose a chart for this data" or "prepare this figure for submission"; the client can select a matching skill. In Codex CLI / the IDE extension, you can also list skills with `/skills` or invoke them explicitly with `$`:
+
+```text
+$chart-type-chooser Profile data.csv, recommend chart types for regional differences, and explain the tradeoffs.
+$nature-figure-production Use the agreed chart type and encoding plan, export PDF, SVG and PNG, and check landed type sizes.
+```
+
+Carry the agreed claim, data paths, filters, chart type and encoding plan into the production step. To continue in another Claude Code / Codex session, provide those decisions and the existing plotting scripts. Chord diagrams additionally need R and `circlize`; maps need `cartopy` / `geopandas`, and `.xlsx` input needs `openpyxl`.
+
+For Codex contributions to this repository, the root [AGENTS.md](AGENTS.md) describes the layout, editing conventions and validation commands.
 
 ## 🗂️ Layout
 
@@ -92,6 +144,7 @@ nature-figure-craft/
 │
 ├── chart-type-chooser/                 # skill 1: choosing
 │   ├── SKILL.md
+│   ├── agents/openai.yaml              # Codex display metadata and default prompt
 │   ├── references/
 │   │   ├── catalog.md                  # nine intents x ~70 chart types
 │   │   ├── decision-rules.md           # structure gates, encoding-channel ranking, tie-breaks
@@ -101,6 +154,7 @@ nature-figure-craft/
 │
 └── nature-figure-production/           # skill 2: drawing
     ├── SKILL.md
+    ├── agents/openai.yaml              # Codex display metadata and default prompt
     ├── references/
     │   ├── spec.md                     # final-artwork spec (88/180 mm, landed type, vector, 50 MB)
     │   ├── style.md                    # typography, units, colour rules, colormap selection

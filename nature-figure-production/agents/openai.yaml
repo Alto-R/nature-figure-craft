@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nature Figure Production"
+  short_description: "Produce and audit publication-ready research figures"
+  default_prompt: "Use $nature-figure-production to turn my agreed chart plan into PDF, SVG and PNG artwork and check landed type sizes."

@@ -1,33 +1,32 @@
 ---
 name: nature-figure-production
 description: >-
-  Produce submission-ready figures for Nature-branded and other high-impact journals.
-  Enforces the official final-artwork specification (88/180 mm widths, Arial
-  measured at LANDED size and derived per panel from where it will be placed, RGB,
-  editable vector export), the Nature house style (lowercase bold panel letters,
-  negative-exponent units, no chart title, frameless legend), a semantic colour system,
-  recipes for the recurring panel families (distributions, coefficient/forest plots,
-  stacked compositions, regression fits, density panels, state timelines, matrices,
-  Sankey flows, small-multiple grids),
-  the map-panel recipe, the region-plot (quadrant) and chord-diagram
-  recipes, and the panel-by-panel production workflow
-  (separate panel export, standalone legend files, PDF+SVG+PNG triple export, vector
-  assembly in Illustrator or PowerPoint).
-  Also runs an addition pass: which layers a panel still needs, and a cold read of
-  the rendered panel to catch the figure that passes every rule and still says nothing.
-  Use when the user asks to plot, draw, chart, visualise data, style a matplotlib
-  figure, build a violin or box panel, a forest / coefficient plot, a stacked or
-  grouped bar chart, a regression fit with a confidence band, a heatmap or
-  correlation matrix, a Sankey / alluvial diagram, a small-multiple grid,
-  build a quadrant / region plot or a chord diagram, derive and justify the
-  dividing lines of a classification figure,
-  prepare final artwork, assemble a multi-panel figure, or fix a figure that
-  "looks unprofessional", "looks bare", or "does not look like anyone would stop on
-  it" for a journal submission.
+  Produce, style and audit submission-ready research figures once the chart type
+  is settled. Use for Nature-family artwork, matplotlib styling, distributions,
+  forest plots, compositions, fits, densities, timelines, matrices, Sankey flows,
+  small multiples, maps, quadrant plots, chord diagrams and multi-panel assembly,
+  or when a figure looks unprofessional or bare. Applies landed type sizes,
+  88/180 mm widths, semantic palettes, editable PDF/SVG plus PNG previews,
+  standalone legends and a submission checklist. For chart-type selection use
+  chart-type-chooser first. Excludes slides, posters, dashboards and conceptual
+  schematics without data.
 license: CC-BY-4.0
 ---
 
 # Nature Figure Production
+
+## Client compatibility
+
+Use this skill in Claude Code or OpenAI Codex with the same workflow and resources.
+Resolve `assets/` and `references/` relative to this `SKILL.md`, not the user's
+working directory. Copy the needed plotting modules into the user's figure-code
+directory, or add the installed `assets/` directory to the script's import path.
+Run plotting scripts in the user's project and keep exports there.
+
+In Codex, invoke explicitly with `$nature-figure-production` or let the client
+select it. Reuse the data paths, chosen claim, filters, chart type and encoding
+plan already agreed with `chart-type-chooser` or in another client session.
+When the chart type is already fixed, use this skill directly.
 
 ## Overview
 

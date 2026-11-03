@@ -4,9 +4,11 @@
 
 **把科研配图拆成两件事：该画哪种图，和怎么把它画成能过投稿的图。**
 
-两个可直接安装的 Claude Code skill，外加四个能独立使用的绘图模块。
+两个同时支持 **Claude Code 和 OpenAI Codex** 的科研配图 skill，外加四个能独立使用的绘图模块。
 
 ![Skills](https://img.shields.io/badge/skills-2-4C72B0)
+![Claude Code](https://img.shields.io/badge/Claude_Code-supported-D97757)
+![Codex](https://img.shields.io/badge/OpenAI_Codex-supported-00A087)
 ![Python](https://img.shields.io/badge/python-3.9%2B-3C5488)
 ![matplotlib](https://img.shields.io/badge/matplotlib-%E2%89%A53.5-0B75B3)
 ![R](https://img.shields.io/badge/R-circlize-982B2D)
@@ -67,23 +69,73 @@
 
 ## 🚀 安装
 
-复制到 Claude Code 的 skills 目录：
+两个客户端共用同一份 `SKILL.md`、参考文档和绘图模块。每个 skill 还提供 `agents/openai.yaml`，供 Codex 读取显示名称、简介和默认提示词。
+
+先下载仓库并安装 Python 依赖：
 
 ```bash
 git clone https://github.com/Alto-R/nature-figure-craft.git
 cd nature-figure-craft
+python -m pip install -r requirements.txt
+```
+
+按你使用的客户端选择安装位置：
+
+| 客户端 | 用户级安装（所有项目可用） | 项目级安装（复制到目标项目） |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| OpenAI Codex | `~/.agents/skills/` | `.agents/skills/` |
+
+### Claude Code
+
+macOS / Linux：
+
+```bash
+mkdir -p ~/.claude/skills
 cp -r chart-type-chooser        ~/.claude/skills/
 cp -r nature-figure-production  ~/.claude/skills/
 ```
 
-Windows：
+Windows PowerShell：
 
-```bat
-xcopy /E /I chart-type-chooser        %USERPROFILE%\.claude\skills\chart-type-chooser
-xcopy /E /I nature-figure-production  %USERPROFILE%\.claude\skills\nature-figure-production
+```powershell
+$skillsDir = Join-Path $HOME '.claude/skills'
+New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
+Copy-Item -Recurse -Force -Path chart-type-chooser, nature-figure-production -Destination $skillsDir
 ```
 
-装好之后正常提需求即可，比如"帮我画一下这组数据"或"这张图看着不像论文里的图"，skill 会自己被触发。
+### OpenAI Codex
+
+macOS / Linux：
+
+```bash
+mkdir -p ~/.agents/skills
+cp -r chart-type-chooser        ~/.agents/skills/
+cp -r nature-figure-production  ~/.agents/skills/
+```
+
+Windows PowerShell：
+
+```powershell
+$skillsDir = Join-Path $HOME '.agents/skills'
+New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
+Copy-Item -Recurse -Force -Path chart-type-chooser, nature-figure-production -Destination $skillsDir
+```
+
+复制整个 skill 目录，包括 `agents/`、`references/` 和 `assets/`。Codex 的本地发现路径和调用方式见 [OpenAI 官方文档](https://developers.openai.com/codex/skills/)。安装后若未出现，重启客户端再检查。
+
+### 使用与协作
+
+在 Claude Code 或 Codex 中正常提需求即可，例如"帮我为这组数据选图"或"把这张图做成投稿版本"，客户端可根据任务选择 skill。Codex CLI / IDE 扩展还可以通过 `/skills` 查看，或用 `$` 显式调用：
+
+```text
+$chart-type-chooser 先分析 data.csv，推荐适合表达地区差异的图型，并解释取舍。
+$nature-figure-production 按刚才确定的图型和编码方案出图，导出 PDF、SVG 和 PNG，并检查落版字号。
+```
+
+两步之间沿用已确认的结论、数据路径、筛选条件、图型和编码方案；切换 Claude Code / Codex 时，把这些信息和已有绘图脚本带到新会话即可继续。弦图另需 R 和 `circlize`；地图另需 `cartopy` / `geopandas`，读取 `.xlsx` 另需 `openpyxl`。
+
+用 Codex 参与本仓库开发时，根目录的 [AGENTS.md](AGENTS.md) 提供项目结构、修改约定和验证命令。
 
 ## 🗂️ 目录结构
 
@@ -92,6 +144,7 @@ nature-figure-craft/
 │
 ├── chart-type-chooser/                 # skill 1：选图
 │   ├── SKILL.md
+│   ├── agents/openai.yaml              # Codex 显示信息与默认提示词
 │   ├── references/
 │   │   ├── catalog.md                  # 九大意图 × ~70 种图型
 │   │   ├── decision-rules.md           # 数据结构门控、编码通道排序、平局裁决
@@ -101,6 +154,7 @@ nature-figure-craft/
 │
 └── nature-figure-production/           # skill 2：画图
     ├── SKILL.md
+    ├── agents/openai.yaml              # Codex 显示信息与默认提示词
     ├── references/
     │   ├── spec.md                     # 终稿硬规格（88/180 mm、落版字号、矢量、50 MB）
     │   ├── style.md                    # 版式、单位写法、配色规则、colormap 选择

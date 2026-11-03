@@ -16,6 +16,19 @@ license: CC-BY-4.0
 
 # Chart Type Chooser
 
+## Client compatibility
+
+Use this skill in Claude Code or OpenAI Codex with the same workflow and resources.
+Resolve `assets/` and `references/` relative to this `SKILL.md`, not the user's
+working directory; pass the user's data file by its actual path. Run commands in
+the user's project so generated files stay with their work.
+
+In Codex, invoke explicitly with `$chart-type-chooser` or let the client select it.
+When handing off to `nature-figure-production` or another client session, carry
+forward the data paths, computed profile, chosen claim, filters, chart type and
+encoding plan. If the production skill is unavailable, return that plan for the
+user to use later.
+
 ## Overview
 
 Most bad figures are not badly *rendered* — they are badly *chosen*. A beautifully
@@ -55,10 +68,11 @@ Load references on demand:
 
 ### Step 0 — Profile the data before saying anything
 
-Never ask "what do you want to plot?" before looking. Run the profiler:
+Never ask "what do you want to plot?" before looking. Run the profiler, replacing
+`<skill-dir>` and `<project-dir>` with the actual installed skill and project paths:
 
 ```bash
-python assets/profile_data.py data.xlsx --sheet Fig2
+python "<skill-dir>/assets/profile_data.py" "<project-dir>/data.xlsx" --sheet Fig2
 ```
 
 It reports, per column: kind (continuous / categorical / identifier / temporal /

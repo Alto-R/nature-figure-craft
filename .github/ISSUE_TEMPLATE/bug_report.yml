@@ -40,10 +40,11 @@ body:
     id: env
     attributes:
       label: Environment
-      description: OS; Python or R version; matplotlib / circlize versions; for font problems, which fonts are installed and how.
+      description: OS; Python or R version; matplotlib / circlize versions; for font problems, which fonts are installed and how. For skill issues, include Claude Code or Codex, the client version, skill installation path, and prompt used.
       placeholder: |
         - OS: Ubuntu 22.04
         - Python 3.12, matplotlib 3.9.2
+        - Skill issues only — client and version, installation path, prompt
     validations:
       required: true
   - type: textarea

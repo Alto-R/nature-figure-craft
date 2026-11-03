@@ -1,8 +1,8 @@
 # Contributing to nature-figure-craft
 
-Thanks for considering a contribution. This repository is two Claude Code
-skills (`chart-type-chooser`, `nature-figure-production`) plus the plotting
-modules they use. Most of it grew out of real manuscript figures, so the most
+Thanks for considering a contribution. This repository is two skills for
+Claude Code and OpenAI Codex (`chart-type-chooser`, `nature-figure-production`)
+plus the plotting modules they use. Most of it grew out of real manuscript figures, so the most
 valuable contributions are the same kind of thing: a rule that broke on a real
 figure, a recipe that held up in a real submission, a bug found by actually
 exporting something.
@@ -16,7 +16,8 @@ has:
   is one;
 - **environment**: OS, Python or R version, and the versions of matplotlib or
   circlize involved. For font problems, also say which fonts are installed and
-  how;
+  how. For skill issues, include the client (Claude Code or Codex), its version,
+  the skill's installation path and the prompt used;
 - **a minimal reproduction**: ideally the module's own self-test, or a few lines
   on synthetic data;
 - **what you already tried.**
@@ -71,6 +72,10 @@ ruff check --select E9,F63,F7,F82 --target-version py39 .
 
 ## Conventions
 
+- **Both clients share one skill source.** Keep instructions in each `SKILL.md`
+  portable across Claude Code and Codex. Resolve resources relative to the skill
+  directory and keep generated files in the user's project. Codex display
+  metadata and default prompts live in each skill's `agents/openai.yaml`.
 - **Match the surrounding code.** Comments explain *why* a choice was made,
   not what the line does; the existing modules are the reference.
 - **Every module keeps a self-test on synthetic data** (`if __name__ ==
@@ -85,6 +90,19 @@ ruff check --select E9,F63,F7,F82 --target-version py39 .
 - **The READMEs are bilingual.** A change to `README.md` needs the matching
   change to `README-EN.md`, and the other way round.
 - **Add a test** when you fix a bug that a test could have caught.
+
+## Working with Claude Code or Codex
+
+Either client can help update the shared skills, references and plotting modules.
+Use the installation steps in [README-EN.md](README-EN.md#-install) to try a skill
+in your own project. Codex reads [AGENTS.md](AGENTS.md) for repository guidance.
+
+For skill changes, check that frontmatter remains valid, relative resource links
+resolve, and any Codex default prompt mentions the correct `$skill-name`. Keep
+`description` concise (at most 1,024 characters). Check changed commands from a
+working directory outside the installed skill folder. If you test in a client,
+record which client and version you used; distinguish static checks from a live
+Claude Code or Codex run.
 
 ## Pull requests
 

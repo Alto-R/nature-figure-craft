@@ -1,0 +1,4 @@
+interface:
+  display_name: "Chart Type Chooser"
+  short_description: "Choose research charts from data and a clear claim"
+  default_prompt: "Use $chart-type-chooser to profile my data and recommend chart types with an encoding plan."

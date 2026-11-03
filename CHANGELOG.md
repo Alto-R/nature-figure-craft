@@ -7,6 +7,22 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- OpenAI Codex support alongside Claude Code: `agents/openai.yaml` metadata and
+  default prompts for both skills, installation instructions for user and project
+  scope, and explicit Codex invocation examples in both READMEs.
+- Root `AGENTS.md` with repository guidance for Codex contributors, plus shared
+  resource-path and cross-client handoff guidance in both skills.
+
+### Changed
+
+- Both READMEs, the contribution guide and issue template now cover Claude Code
+  and Codex. Installation examples create the destination directory first and
+  include Windows PowerShell commands and Python dependency setup.
+- Shortened the production skill's discovery description to fit the 1,024-character
+  limit; its detailed plotting workflow remains in the skill body and references.
+
 ## [0.2.0] - 2026-11-03
 
 ### Changed
