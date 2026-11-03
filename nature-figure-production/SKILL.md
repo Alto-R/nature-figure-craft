@@ -424,6 +424,9 @@ and sector geometry and a hand-rolled version does not.
   default padding is wider than a small sector and circlize drops it silently.
 - Size labels in landed points, not in raw `cex`, and export **PDF**. A
   600-dpi PNG is a preview, not final artwork.
+- Export through `cairo_pdf()`, never `pdf()` + extrafont: the extrafont path
+  leaves Arial unembedded with broken widths, and viewers render the labels
+  as garbage while the PNG preview still looks right.
 - A chord has no axis and circlize draws no legend — export one separately.
 
 ### Step 3d — Add what the panel is missing

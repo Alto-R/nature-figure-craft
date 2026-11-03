@@ -87,6 +87,10 @@ Matplotlib implication: `pdf.fonttype = 42` and `ps.fonttype = 42` embed TrueTyp
 keep glyphs as text. The default (Type 3) converts text to outlines. For SVG,
 `svg.fonttype = 'none'` keeps text as text.
 
+R implication: export with `cairo_pdf()`, which embeds Arial as a TrueType subset.
+`pdf()` with an extrafont-registered Arial embeds nothing and, with the AFMs
+current Rttf2pt1 produces, writes broken glyph widths that `embedFonts()` cannot repair.
+
 Panel-letter size is the one place to exceed body type slightly (8 pt bold is
 conventional and accepted).
 

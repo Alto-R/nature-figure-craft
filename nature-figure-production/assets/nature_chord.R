@@ -45,7 +45,9 @@
 # * cell.padding = 0 is mandatory when small sectors exist: the default padding
 #   is larger than a small sector, and circlize silently drops it.
 # * Vector PDF is the deliverable. A 600-dpi PNG is a preview, not final
-#   artwork -- see references/spec.md.
+#   artwork -- see references/spec.md. Both go through cairo, so the preview
+#   shows what the PDF shows; a font failure would otherwise be invisible in
+#   the PNG and only surface in the PDF.
 #
 # Nothing here depends on a specific project or discipline.
 
@@ -130,13 +132,30 @@ pt_to_cex <- function(pt) pt / BASE_PT
 # Helpers
 # --------------------------------------------------------------------------
 
+# PDF export goes through cairo_pdf(), not pdf(). pdf() can only use a font
+# outside the base 14 through AFM metrics, and the AFMs extrafont builds with
+# Rttf2pt1 are broken (code 32 named "nbspace", CapHeight -30000): pdf() writes
+# zero widths for space and hyphen, embeds no font program, and viewers render
+# every label as garbage. embedFonts() cannot repair the widths afterwards.
+# cairo_pdf() reads the system font directly and embeds a TrueType subset.
+# Without cairo, fall back to pdf() with base-14 Helvetica, never to extrafont.
+.has_cairo <- function() isTRUE(capabilities("cairo"))
+
 .pick_font <- function() {
-  ok <- tryCatch({
-    suppressPackageStartupMessages(library(extrafont))
-    loadfonts(device = "pdf", quiet = TRUE)
-    "Arial" %in% fonts()
-  }, error = function(e) FALSE)
-  if (isTRUE(ok)) "Arial" else "sans"
+  if (!.has_cairo()) return("sans")
+  if (requireNamespace("systemfonts", quietly = TRUE) &&
+      !"Arial" %in% systemfonts::system_fonts()$family)
+    message("nature_chord: Arial not installed; cairo will substitute the nearest sans-serif.")
+  "Arial"
+}
+
+.open_pdf <- function(file, width, height, family) {
+  if (.has_cairo())
+    grDevices::cairo_pdf(file, width = width, height = height,
+                         pointsize = BASE_PT, family = family)
+  else
+    grDevices::pdf(file, width = width, height = height,
+                   pointsize = BASE_PT, family = family, useDingbats = FALSE)
 }
 
 # Ordered ramp for however many groups exist. Deliberately not a rainbow: the
@@ -323,14 +342,15 @@ nature_chord <- function(cfg = chord_config) {
   }
 
   # PDF is the deliverable; PNG is a preview only.
-  grDevices::pdf(paste0(cfg$output, ".pdf"), width = in_w, height = in_w,
-                 pointsize = BASE_PT, family = font_family, useDingbats = FALSE)
+  .open_pdf(paste0(cfg$output, ".pdf"), in_w, in_w, font_family)
   .draw()
   grDevices::dev.off()
 
   if (isTRUE(cfg$png_preview)) {
+    # Same renderer as the PDF; without cairo, whatever png() defaults to.
     grDevices::png(paste0(cfg$output, ".png"), width = in_w, height = in_w,
-                   units = "in", res = 300, pointsize = BASE_PT)
+                   units = "in", res = 300, pointsize = BASE_PT,
+                   type = if (.has_cairo()) "cairo" else getOption("bitmapType"))
     .draw()
     grDevices::dev.off()
   }
@@ -368,8 +388,7 @@ chord_legend <- function(items, output = "chord_legend", width_mm = 30,
     }
   }
 
-  grDevices::pdf(paste0(output, ".pdf"), width = in_w, height = in_h,
-                 pointsize = BASE_PT, family = font_family, useDingbats = FALSE)
+  .open_pdf(paste0(output, ".pdf"), in_w, in_h, font_family)
   .draw()
   grDevices::dev.off()
   invisible(output)

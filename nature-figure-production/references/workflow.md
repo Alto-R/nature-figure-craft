@@ -264,6 +264,9 @@ Run every item. Mark CRITICAL failures first.
 - [ ] Text and overlays editable, nothing flattened
 - [ ] File under 50 MB
 - [ ] `pdf.fonttype = 42` set
+- [ ] Every font in the PDF is embedded (`pdffonts`, or PyMuPDF `page.get_fonts()`),
+      and the PDF itself was opened and read, not only the PNG. The PNG is a
+      preview; a font failure in the deliverable does not show up in it
 
 ### House style
 - [ ] Panel letters lowercase, bold, no parentheses, consistent position
