@@ -1,0 +1,39 @@
+name: Release
+
+# Pushing a tag vX.Y.Z publishes a GitHub release whose notes are that
+# version's section of CHANGELOG.md. Run it by hand with an existing tag to
+# publish a release for a tag that was pushed before this workflow existed.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to publish, e.g. v0.1.0
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Extract this version's notes from CHANGELOG.md
+        run: |
+          awk -v ver="${TAG#v}" '
+            /^## \[/ || /^\[[^]]+\]: / { if (found) exit }
+            index($0, "## [" ver "]") == 1 { found = 1; next }
+            found
+          ' CHANGELOG.md > notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "::error::CHANGELOG.md has no section for ${TAG#v}"
+            exit 1
+          fi
+          cat notes.md
+      - run: gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag

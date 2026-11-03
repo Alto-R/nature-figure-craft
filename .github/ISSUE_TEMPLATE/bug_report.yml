@@ -1,0 +1,53 @@
+name: Bug report
+description: Something produces wrong output, crashes, or contradicts the documentation.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. For anything about exported artwork, please open the **PDF itself**, not only the PNG preview — some failures appear only in the deliverable.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - nature_style.py
+        - nature_panels.py
+        - nature_map.py
+        - nature_quadrant.py
+        - nature_chord.R
+        - profile_data.py
+        - a skill's instructions (SKILL.md / references)
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: What you saw versus what you expected. Paste exact error messages.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduce
+      description: The smallest code that shows it, on synthetic data if possible. The module's own self-test counts.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: OS; Python or R version; matplotlib / circlize versions; for font problems, which fonts are installed and how.
+      placeholder: |
+        - OS: Ubuntu 22.04
+        - Python 3.12, matplotlib 3.9.2
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you already tried
+      description: Workarounds, other export paths, versions. Optional, but it saves a round trip.

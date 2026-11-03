@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Churui Huang
+# SPDX-License-Identifier: MIT
+
 # nature_chord.R -- grouped chord diagram for journal figures.
 #
 # Why R and not matplotlib, in a repo whose other assets are Python: the hard

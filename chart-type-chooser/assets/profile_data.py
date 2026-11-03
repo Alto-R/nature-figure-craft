@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Churui Huang
+# SPDX-License-Identifier: MIT
+
 """
 profile_data.py -- read a data file and report what figures it can support.
 

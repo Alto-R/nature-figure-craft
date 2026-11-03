@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Churui Huang
+# SPDX-License-Identifier: MIT
+
 """
 nature_panels.py -- the recurring data-panel families, drawn to house style.
 

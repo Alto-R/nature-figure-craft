@@ -1,0 +1,30 @@
+name: Rule or recipe proposal
+description: Propose a new rule, palette, panel recipe or chart type, or a change to an existing one.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: The proposal
+      description: The rule, palette or recipe, stated the way it would appear in the docs.
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: The decision it turns on
+      description: What does the author have to choose here, and what are the options?
+    validations:
+      required: true
+  - type: textarea
+    id: failure
+    attributes:
+      label: The failure it prevents
+      description: What goes wrong without it? A before/after figure is the strongest evidence.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: For a journal-specification claim, a link to the published artwork guidelines. For a judgement call, say so.

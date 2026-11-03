@@ -1,0 +1,11 @@
+# Runtime dependencies of the Python assets (Python 3.9+).
+numpy
+matplotlib>=3.5
+pandas            # profile_data.py
+scipy             # fits and densities in nature_panels.py / nature_quadrant.py
+scikit-learn      # nature_quadrant.gmm_threshold()
+
+# Optional, installed separately when needed:
+#   openpyxl              profile_data.py on .xlsx files
+#   cartopy, geopandas    nature_map.py
+# The R chord diagram needs R with the circlize package (see CONTRIBUTING.md).

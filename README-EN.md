@@ -10,8 +10,10 @@ Two installable Claude Code skills, plus four plotting modules that work on thei
 ![Python](https://img.shields.io/badge/python-3.9%2B-3C5488)
 ![matplotlib](https://img.shields.io/badge/matplotlib-%E2%89%A53.5-0B75B3)
 ![R](https://img.shields.io/badge/R-circlize-982B2D)
-![License](https://img.shields.io/badge/license-CC--BY--4.0-00A087)
-![Status](https://img.shields.io/badge/status-v0.1%20first%20release-DDAA33)
+![Code license](https://img.shields.io/badge/code-MIT-00A087)
+![Docs license](https://img.shields.io/badge/docs-CC%20BY%204.0-00A087)
+[![CI](https://github.com/Alto-R/nature-figure-craft/actions/workflows/ci.yml/badge.svg)](https://github.com/Alto-R/nature-figure-craft/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Alto-R/nature-figure-craft?color=DDAA33)](https://github.com/Alto-R/nature-figure-craft/releases)
 
 **[中文](README.md)** | **[English](README-EN.md)**
 
@@ -27,7 +29,7 @@ This is what accumulated from my own submissions: the palettes, the layout rules
 
 **It keeps growing.** Every new paper and every new batch of figures adds whatever I got wrong and whatever rule came out of it — `palettes.md` in particular is meant to thicken over time.
 
-This is **v0.1, the first release**. Issues pointing out what's wrong are welcome.
+What changed in each release is in [CHANGELOG.md](CHANGELOG.md). Issues pointing out what's wrong are welcome — see [Contributing](#-contributing).
 
 ---
 
@@ -37,7 +39,7 @@ This is **v0.1, the first release**. Issues pointing out what's wrong are welcom
 |:--:|:--:|:--:|
 | [🧭 What this is](#-what-this-is) | [⚖️ Division of labour](#-division-of-labour) | [🚀 Install](#-install) |
 | [🗂️ Layout](#-layout) | [🎨 Palette gallery](#-palette-gallery) · [🧱 Panel recipes](#-panel-recipe-gallery) | [🧩 Using the style module alone](#-using-the-style-module-alone) |
-| [💡 The short version](#-the-short-version) | [📄 License](#-license) | |
+| [💡 The short version](#-the-short-version) | [🤝 Contributing](#-contributing) | [📄 License](#-license) |
 
 </div>
 
@@ -206,9 +208,21 @@ The load-bearing idea: **fix type size by what it measures on the printed page, 
 **On choosing**
 > Write down the one sentence the figure should make a reader remember. If you cannot write it, do not draw the figure.
 
+## 🤝 Contributing
+
+Bug reports, rule proposals and pull requests are welcome; [CONTRIBUTING.md](CONTRIBUTING.md) covers what makes each one actionable. Every push runs [CI](https://github.com/Alto-R/nature-figure-craft/actions/workflows/ci.yml): the self-tests on Linux, Windows and macOS (Python 3.9 and 3.13), and the chord diagram in R with a check that every font in its PDF is embedded. To run the same suite locally:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
 ## 📄 License
 
-[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+- **Code** — the Python and R modules, tests and workflows — is under the [MIT License](LICENSE).
+- **Documentation and skill content** — `SKILL.md`, `references/`, the READMEs — is under [CC BY 4.0](LICENSE-docs). Code samples inside the documentation may also be used under MIT.
+
+Up to v0.1.0 the whole repository was CC BY 4.0. From v0.2.0 the code is MIT, since Creative Commons advises against using its licenses for software.
 
 ---
 

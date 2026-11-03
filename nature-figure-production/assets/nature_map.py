@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Churui Huang
+# SPDX-License-Identifier: MIT
+
 """
 nature_map.py -- publication map panels: basemap, polygons, points, fields.
 

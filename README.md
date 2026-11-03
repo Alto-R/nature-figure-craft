@@ -10,8 +10,10 @@
 ![Python](https://img.shields.io/badge/python-3.9%2B-3C5488)
 ![matplotlib](https://img.shields.io/badge/matplotlib-%E2%89%A53.5-0B75B3)
 ![R](https://img.shields.io/badge/R-circlize-982B2D)
-![License](https://img.shields.io/badge/license-CC--BY--4.0-00A087)
-![Status](https://img.shields.io/badge/status-v0.1%20初版-DDAA33)
+![Code license](https://img.shields.io/badge/code-MIT-00A087)
+![Docs license](https://img.shields.io/badge/docs-CC%20BY%204.0-00A087)
+[![CI](https://github.com/Alto-R/nature-figure-craft/actions/workflows/ci.yml/badge.svg)](https://github.com/Alto-R/nature-figure-craft/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Alto-R/nature-figure-craft?color=DDAA33)](https://github.com/Alto-R/nature-figure-craft/releases)
 
 **[中文](README.md)** | **[English](README-EN.md)**
 
@@ -27,7 +29,7 @@
 
 **会持续更新。** 每写一篇新论文、画一批新图，就会把新踩到的坑和新总结出来的规则补进去——尤其是 `palettes.md` 这类示例库，会随着后面的图慢慢变厚。
 
-目前是 **v0.1 初版**，欢迎提 issue 指出不对的地方。
+每个版本改了什么见 [CHANGELOG.md](CHANGELOG.md)。欢迎提 issue 指出不对的地方，参见[参与贡献](#-参与贡献)。
 
 ---
 
@@ -37,7 +39,7 @@
 |:--:|:--:|:--:|
 | [🧭 这是什么](#-这是什么) | [⚖️ 两个 skill 的分工](#-两个-skill-的分工) | [🚀 安装](#-安装) |
 | [🗂️ 目录结构](#-目录结构) | [🎨 配色示例库](#-配色示例库) · [🧱 面板组件库](#-面板组件库) | [🧩 直接用样式模块](#-直接用样式模块) |
-| [💡 核心观点](#-核心观点) | [📄 License](#-license) | |
+| [💡 核心观点](#-核心观点) | [🤝 参与贡献](#-参与贡献) | [📄 License](#-license) |
 
 </div>
 
@@ -206,9 +208,21 @@ save_all('fig1_a_timeseries', fig)       # 同时写出 pdf/ svg/ png/
 **选图**
 > 先写下"这张图要让读者记住的那一句话"。写不出来，就别画这张图。
 
+## 🤝 参与贡献
+
+欢迎报告问题、提议新规则或直接提 PR，怎样写才便于处理见 [CONTRIBUTING.md](CONTRIBUTING.md)（英文）。每次推送都会跑 [CI](https://github.com/Alto-R/nature-figure-craft/actions/workflows/ci.yml)：在 Linux、Windows、macOS 上（Python 3.9 和 3.13）跑全部 self-test，并在 R 里生成弦图、检查 PDF 中的字体全部嵌入。本地跑同一套测试：
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
 ## 📄 License
 
-[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+- **代码**（Python 和 R 模块、测试、工作流）采用 [MIT License](LICENSE)。
+- **文档和 skill 内容**（`SKILL.md`、`references/`、README）采用 [CC BY 4.0](LICENSE-docs)。文档里的代码示例也可按 MIT 使用。
+
+v0.1.0 及之前整个仓库都是 CC BY 4.0。从 v0.2.0 起代码改为 MIT，因为 Creative Commons 官方不建议用 CC 许可证授权软件。
 
 ---
 

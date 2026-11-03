@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest
+pypdf             # font-embedding checks on the exported PDFs
+ruff
